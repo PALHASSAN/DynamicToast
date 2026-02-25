@@ -17,18 +17,32 @@ public struct ToastNotification: Identifiable, Sendable {
     public var iconColor: (Color, Color) = (.white, .green)
     public var duration: TimeInterval = 3.0
     
+    public var titleFont: Font = .callout
+    public var bodyFont: Font = .caption
+    
+    var isArabic: Bool {
+        let combinedText = title + body
+        return combinedText.range(of: "\\p{Arabic}", options: .regularExpression) != nil
+    }
+    
     private init() {}
     
     public static func make() -> ToastNotification {
         return ToastNotification()
     }
     
-    public func title(_ title: String) -> Self {
-        var copy = self; copy.title = title; return copy
+    public func title(_ title: String, font: Font? = nil) -> Self {
+        var copy = self
+        copy.title = title
+        if let font { copy.titleFont = font }
+        return copy
     }
     
-    public func body(_ body: String) -> Self {
-        var copy = self; copy.body = body; return copy
+    public func body(_ body: String, font: Font? = nil) -> Self {
+        var copy = self
+        copy.body = body
+        if let font { copy.bodyFont = font }
+        return copy
     }
     
     public func icon(_ icon: ToastIcon, color: Color = .white, secondaryColor: Color = .white) -> Self {

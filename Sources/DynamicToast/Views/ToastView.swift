@@ -91,13 +91,13 @@ public struct ToastView: View {
                         Spacer(minLength: 0)
                     }
                     Text(toast.title)
-                        .font(.callout)
+                        .font(toast.titleFont)
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
                     
                     if !toast.body.isEmpty {
                         Text(toast.body)
-                            .font(.caption)
+                            .font(toast.bodyFont)
                             .foregroundStyle(Color.twSlate100)
                     }
                 }
@@ -108,6 +108,7 @@ public struct ToastView: View {
             }
             .padding(.horizontal, 20)
             .padding(.top, haveDynamicIsland ? 12 : 0)
+            .environment(\.layoutDirection, toast.isArabic ? .rightToLeft : .leftToRight)
             .compositingGroup()
             .blur(radius: isExpended ? 0 : 5)
             .opacity(isExpended ? 1 : 0)
