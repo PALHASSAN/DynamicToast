@@ -3,24 +3,26 @@
 
 import PackageDescription
 
+import PackageDescription
+
 let package = Package(
     name: "DynamicToast",
+    platforms: [.iOS(.v18)],
     products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "DynamicToast",
-            targets: ["DynamicToast"]
-        ),
+        .library(name: "DynamicToast", targets: ["DynamicToast"]),
+    ],
+    dependencies: [
+        .package(url: "https://github.com/phosphor-icons/swift", exact: "2.1.0")
     ],
     targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "DynamicToast"
-        ),
-        .testTarget(
-            name: "DynamicToastTests",
-            dependencies: ["DynamicToast"]
+            name: "DynamicToast",
+            dependencies: [
+                .product(name: "PhosphorSwift", package: "swift")
+            ],
+            swiftSettings: [
+                .enableExperimentalFeature("StrictConcurrency")
+            ]
         ),
     ]
 )
