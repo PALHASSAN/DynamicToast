@@ -8,20 +8,22 @@ struct TestView: View {
                 Button("Show Toast") {
                     ToastNotification.make()
                         .title("تم إنشاء ختمة بنجاح!")
-                        .body("تم إنشاء ختمة")
+                        .body(" تم إنشاء ختمة")
                         .icon(Ph.checkFat.duotone)
+                        .iconSize(46)
                         .duration(10)
                         .send()
                 }
                 
                 Button("Show Phosphor Toast") {
                     ToastNotification.make()
-                        .title("تم الحذف بنجاح")
-                        .icon(Ph.trash.duotone)
+                        .title("Deleted")
+                        .body("Deleted Successfully")
+                        .success()
                         .send()
                 }
             }
-            .navigationTitle("Dynamic Island Toast")
+            .navigationTitle("Try Toast")
         }
     }
 }

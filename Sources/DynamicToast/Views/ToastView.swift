@@ -8,9 +8,19 @@
 import SwiftUI
 import PhosphorSwift
 
+struct ToastTextHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = max(value, nextValue())
+    }
+}
+
 @MainActor
 public struct ToastView: View {
     private var manager = ToastManager.shared
+    
+    // Save text height
+    @State private var textHeight: CGFloat = 0
     
     public init() {}
     
@@ -27,12 +37,16 @@ public struct ToastView: View {
             
             // Expanded
             let isExpended = manager.isPresented
-            let expendedWidth = size.width - 20
             let iconSize = manager.currentToast?.iconSize ?? 32
             let verticalPadding: CGFloat = haveDynamicIsland ? 55 : 30
             let defaultHeight: CGFloat = haveDynamicIsland ? 90 : 70
             
-            let expendedHeight: CGFloat = max(defaultHeight, iconSize + verticalPadding)
+            let expendedWidth = size.width - 20
+            
+            let textMargin: CGFloat = haveDynamicIsland ? 50 : 30
+            let textBasedHeight = textHeight > 0 ? (textHeight + textMargin) : defaultHeight
+            let expendedHeight: CGFloat = max(defaultHeight, iconSize + verticalPadding, textBasedHeight)
+            
             let scaleX: CGFloat = isExpended ? 1 : (dynamicIslandWidth / expendedWidth)
             let scaleY: CGFloat = isExpended ? 1 : (dynamicIslandHeight / expendedHeight)
             
@@ -99,6 +113,9 @@ public struct ToastView: View {
                         )
                 }
             }
+            .onPreferenceChange(ToastTextHeightKey.self) { newHeight in
+                textHeight = newHeight
+            }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .ignoresSafeArea()
             .animation(.bouncy(duration: 0.3, extraBounce: 0), value: isExpended)
@@ -108,34 +125,43 @@ public struct ToastView: View {
     @ViewBuilder
     private func ToastContent(_ haveDynamicIsland: Bool, isExpended: Bool) -> some View {
         if let toast = manager.currentToast {
-            HStack(alignment: .center, spacing: 10) {
+            HStack(spacing: 10) {
                 if let icon = toast.icon {
                     renderIcon(icon, size: toast.iconSize, color: toast.iconColor)
                         .symbolEffect(.wiggle, options: .default.speed(1.5), value: isExpended)
                 }
                 
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(toast.title)
-                        .font(toast.titleFont)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                        .multilineTextAlignment(.leading)
-                    
-                    if !toast.body.isEmpty {
-                        Text(toast.body)
-                            .font(toast.bodyFont)
-                            .foregroundStyle(Color.twSlate100)
-                            .multilineTextAlignment(.leading)
+                VStack(alignment: .leading, spacing: 4) {
+                    if haveDynamicIsland {
+                        Spacer(minLength: 0)
                     }
+                    
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(toast.title)
+                            .font(toast.titleFont)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                        
+                        if !toast.body.isEmpty {
+                            Text(toast.body)
+                                .font(toast.bodyFont)
+                                .foregroundStyle(Color.twNeutral100)
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .background(
+                        GeometryReader {
+                            Color.clear.preference(key: ToastTextHeightKey.self, value: $0.size.height)
+                        }
+                    )
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.leading, toast.icon == nil ? 12 : 0)
-                .lineLimit(1)
+                .padding(.bottom, haveDynamicIsland ? 14 : 0)
             }
-            .padding(.horizontal, 30)
-            .padding(.top, haveDynamicIsland ? 42 : 15)
-            .padding(.bottom, 16)
-            .frame(maxHeight: .infinity, alignment: .bottom)
+            .padding(.horizontal, 20)
             .environment(\.layoutDirection, toast.isArabic ? .rightToLeft : .leftToRight)
             .compositingGroup()
             .blur(radius: isExpended ? 0 : 5)
