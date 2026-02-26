@@ -17,6 +17,7 @@ public final class ToastManager {
     private var dismissTask: Task<Void, Never>?
     
     private var overlayWindow: PassThroughWindow?
+    private var overlayController: CustomHostingView<ToastView>?
     
     private init() {}
     
@@ -40,7 +41,7 @@ public final class ToastManager {
     
     private func presentNew(_ toast: ToastNotification) {
         currentToast = toast
-        isPresented = true
+        overlayController?.isStatusBarHidden = true
         
         withAnimation(.bouncy(duration: 0.3, extraBounce: 0)) {
             isPresented = true
@@ -54,6 +55,14 @@ public final class ToastManager {
                 self.isPresented = false
             }
             
+            self.isPresented = false
+        }
+    }
+    
+    // Showing Status Bar after dismiss the toast
+    public func dismiss() {
+        overlayController?.isStatusBarHidden = false
+        withAnimation(.bouncy(duration: 0.3, extraBounce: 0)) {
             self.isPresented = false
         }
     }
@@ -76,6 +85,7 @@ public final class ToastManager {
         hostingController.view.backgroundColor = .clear
         window.rootViewController = hostingController
         
+        self.overlayController = hostingController
         self.overlayWindow = window
     }
 }

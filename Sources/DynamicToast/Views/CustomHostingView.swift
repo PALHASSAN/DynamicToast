@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-@MainActor
-public final class CustomHostingView<Content: View>: UIHostingController<Content> {
+class CustomHostingView<Content: View>: UIHostingController<Content> {
     public var isStatusBarHidden: Bool = false {
         didSet { setNeedsStatusBarAppearanceUpdate() }
     }
