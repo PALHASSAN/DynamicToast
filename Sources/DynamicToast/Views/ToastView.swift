@@ -41,7 +41,7 @@ public struct ToastView: View {
                     ConcentricRectangle(
                         corners: .concentric(minimum: .fixed(30)), isUniform: true
                     )
-                    .fill(Color.twNeutral800)
+                    .fill(.black)
                     .overlay {
                         ToastContent(haveDynamicIsland, isExpended: isExpended)
                             .frame(width: expendedWidth, height: expendedHeight)
