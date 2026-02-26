@@ -9,7 +9,7 @@ struct TestView: View {
                     ToastNotification.make()
                         .title("تم إنشاء ختمة بنجاح!")
                         .body("تم إنشاء ختمة")
-                        .icon(Ph.mosque.regular)
+                        .icon(Ph.checkFat.duotone)
                         .duration(10)
                         .send()
                 }
