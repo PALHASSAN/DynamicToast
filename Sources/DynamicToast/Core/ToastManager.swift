@@ -28,7 +28,8 @@ public final class ToastManager {
         setupWindowIfNeeded()
         
         if isPresented {
-            isPresented = false
+            dismiss()
+            
             // Brief delay to allow dismiss animation before presenting the new one
             Task {
                 try? await Task.sleep(for: .milliseconds(100))
@@ -51,11 +52,7 @@ public final class ToastManager {
             try? await Task.sleep(for: .seconds(toast.duration))
             guard !Task.isCancelled else { return }
             
-            withAnimation(.bouncy(duration: 0.3, extraBounce: 0)) {
-                self.isPresented = false
-            }
-            
-            self.isPresented = false
+            self.dismiss()
         }
     }
     
