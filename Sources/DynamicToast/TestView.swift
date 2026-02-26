@@ -23,7 +23,6 @@ struct TestView: View {
             }
             .navigationTitle("Dynamic Island Toast")
         }
-        .withDynamicToastContainer()
     }
 }
 

@@ -53,7 +53,7 @@ public struct ToastView: View {
                     // Devices that do not have dynamic island
                     .opacity(haveDynamicIsland ? 1 : (isExpended ? 1 : 0))
                     // Devices that have dynamic island
-                    .animation(.linear(duration: 0.02).delay(isExpended ? 0 : 0.28)) { content in
+                    .animation(.linear(duration: 0.02) .delay(isExpended ? 0 : 0.28)) { content in
                         content
                             .opacity(haveDynamicIsland ? (isExpended ? 1 : 0) : 1)
                     }
@@ -75,41 +75,41 @@ public struct ToastView: View {
     }
     
     @ViewBuilder
-        private func ToastContent(_ haveDynamicIsland: Bool, isExpended: Bool) -> some View {
-            if let toast = manager.currentToast {
-                HStack(alignment: .center, spacing: 10) {
-                    if let icon = toast.icon {
-                        renderIcon(icon, size: toast.iconSize, color: toast.iconColor)
-                            .symbolEffect(.wiggle, options: .default.speed(1.5), value: isExpended)
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(toast.title)
-                            .font(toast.titleFont)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .multilineTextAlignment(.leading)
-                        
-                        if !toast.body.isEmpty {
-                            Text(toast.body)
-                                .font(toast.bodyFont)
-                                .foregroundStyle(Color.twSlate100)
-                                .multilineTextAlignment(.leading)
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.leading, toast.icon == nil ? 12 : 0)
-                    .lineLimit(1)
+    private func ToastContent(_ haveDynamicIsland: Bool, isExpended: Bool) -> some View {
+        if let toast = manager.currentToast {
+            HStack(alignment: .center, spacing: 10) {
+                if let icon = toast.icon {
+                    renderIcon(icon, size: toast.iconSize, color: toast.iconColor)
+                        .symbolEffect(.wiggle, options: .default.speed(1.5), value: isExpended)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, haveDynamicIsland ? 12 : 0)
-                .frame(maxHeight: .infinity, alignment: .center)
-                .environment(\.layoutDirection, toast.isArabic ? .rightToLeft : .leftToRight)
-                .compositingGroup()
-                .blur(radius: isExpended ? 0 : 5)
-                .opacity(isExpended ? 1 : 0)
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(toast.title)
+                        .font(toast.titleFont)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.leading)
+                    
+                    if !toast.body.isEmpty {
+                        Text(toast.body)
+                            .font(toast.bodyFont)
+                            .foregroundStyle(Color.twSlate100)
+                            .multilineTextAlignment(.leading)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.leading, toast.icon == nil ? 12 : 0)
+                .lineLimit(1)
             }
+            .padding(.horizontal, 20)
+            .padding(.top, haveDynamicIsland ? 12 : 0)
+            .frame(maxHeight: .infinity, alignment: .center)
+            .environment(\.layoutDirection, toast.isArabic ? .rightToLeft : .leftToRight)
+            .compositingGroup()
+            .blur(radius: isExpended ? 0 : 5)
+            .opacity(isExpended ? 1 : 0)
         }
+    }
     
     @ViewBuilder
     private func renderIcon(_ icon: ToastIcon, size: CGFloat, color: Color) -> some View {

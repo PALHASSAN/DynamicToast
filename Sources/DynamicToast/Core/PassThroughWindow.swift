@@ -9,6 +9,9 @@ import SwiftUI
 
 @Observable
 class PassThroughWindow: UIWindow {
+    var toast: ToastNotification? = nil
+    var isPresented: Bool = false
+    
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard let hitView = super.hitTest(point, with: event),
               let rootView = rootViewController?.view else {
