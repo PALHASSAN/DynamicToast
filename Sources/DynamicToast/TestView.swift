@@ -7,16 +7,16 @@ struct TestView: View {
             List {
                 Button("Show Toast") {
                     ToastNotification.make()
-                        .title("تم التحديث")
-                        .success()
-                        .body("تم مزامنة البيانات بنجاح")
+                        .title("تم إنشاء ختمة بنجاح!")
+                        .body("تم إنشاء ختمة")
+                        .icon(Ph.mosque.regular)
+                        .duration(10)
                         .send()
                 }
                 
                 Button("Show Phosphor Toast") {
                     ToastNotification.make()
                         .title("تم الحذف بنجاح")
-                        .body("تم حذف الملف نهائياً من النظام")
                         .icon(Ph.trash.duotone)
                         .send()
                 }

@@ -28,7 +28,11 @@ public struct ToastView: View {
             // Expanded
             let isExpended = manager.isPresented
             let expendedWidth = size.width - 20
-            let expendedHeight: CGFloat = haveDynamicIsland ? 90 : 70
+            let iconSize = manager.currentToast?.iconSize ?? 32
+            let verticalPadding: CGFloat = haveDynamicIsland ? 55 : 30
+            let defaultHeight: CGFloat = haveDynamicIsland ? 90 : 70
+            
+            let expendedHeight: CGFloat = max(defaultHeight, iconSize + verticalPadding)
             let scaleX: CGFloat = isExpended ? 1 : (dynamicIslandWidth / expendedWidth)
             let scaleY: CGFloat = isExpended ? 1 : (dynamicIslandHeight / expendedHeight)
             
@@ -37,7 +41,7 @@ public struct ToastView: View {
                     ConcentricRectangle(
                         corners: .concentric(minimum: .fixed(30)), isUniform: true
                     )
-                    .fill(.black)
+                    .fill(Color.twNeutral800)
                     .overlay {
                         ToastContent(haveDynamicIsland, isExpended: isExpended)
                             .frame(width: expendedWidth, height: expendedHeight)
@@ -110,7 +114,7 @@ public struct ToastView: View {
                         .symbolEffect(.wiggle, options: .default.speed(1.5), value: isExpended)
                 }
                 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text(toast.title)
                         .font(toast.titleFont)
                         .fontWeight(.semibold)
@@ -128,9 +132,10 @@ public struct ToastView: View {
                 .padding(.leading, toast.icon == nil ? 12 : 0)
                 .lineLimit(1)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, haveDynamicIsland ? 12 : 0)
-            .frame(maxHeight: .infinity, alignment: .center)
+            .padding(.horizontal, 30)
+            .padding(.top, haveDynamicIsland ? 42 : 15)
+            .padding(.bottom, 16)
+            .frame(maxHeight: .infinity, alignment: .bottom)
             .environment(\.layoutDirection, toast.isArabic ? .rightToLeft : .leftToRight)
             .compositingGroup()
             .blur(radius: isExpended ? 0 : 5)
