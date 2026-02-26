@@ -65,7 +65,34 @@ public struct ToastView: View {
                         }
                     )
                 } else {
-                    // Fallback on earlier versions
+                    RoundedRectangle(cornerRadius: isExpended ? 30 : 18, style: .continuous)
+                        .fill(.black)
+                        .overlay {
+                            ToastContent(haveDynamicIsland, isExpended: isExpended)
+                                .frame(width: expendedWidth, height: expendedHeight)
+                                .scaleEffect(x: scaleX, y: scaleY)
+                        }
+                        .frame(
+                            width: isExpended ? expendedWidth : dynamicIslandWidth,
+                            height: isExpended ? expendedHeight : dynamicIslandHeight
+                        )
+                        .offset(
+                            y: haveDynamicIsland ? topOffest : (isExpended ? safeArea.top + 10 : -80)
+                        )
+                        // Devices that do not have dynamic island
+                        .opacity(haveDynamicIsland ? 1 : (isExpended ? 1 : 0))
+                        // Devices that have dynamic island
+                        .animation(.linear(duration: 0.02) .delay(isExpended ? 0 : 0.28)) { content in
+                            content
+                                .opacity(haveDynamicIsland ? (isExpended ? 1 : 0) : 1)
+                        }
+                        .geometryGroup()
+                        .contentShape(.rect)
+                        .gesture(
+                            DragGesture().onEnded { _ in
+                                manager.isPresented = false
+                            }
+                        )
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

@@ -57,6 +57,7 @@ public final class ToastManager {
             self.isPresented = false
         }
     }
+    
     private func setupWindowIfNeeded() {
         guard overlayWindow == nil else { return }
         
