@@ -58,6 +58,8 @@ public final class ToastManager {
     
     // Showing Status Bar after dismiss the toast
     public func dismiss() {
+        dismissTask?.cancel()
+        
         overlayController?.isStatusBarHidden = false
         withAnimation(.bouncy(duration: 0.3, extraBounce: 0)) {
             self.isPresented = false
