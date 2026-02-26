@@ -61,7 +61,7 @@ public struct ToastView: View {
                     .contentShape(.rect)
                     .gesture(
                         DragGesture().onEnded { _ in
-                            manager.isPresented = false
+                            manager.dismiss()
                         }
                     )
                 } else {
