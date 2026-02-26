@@ -6,9 +6,9 @@
 //
 
 import SwiftUI
-import PhosphorSwift
+@preconcurrency import PhosphorSwift
 
 public enum ToastIcon: Sendable {
     case system(String)
-    case phosphor(String)
+    case custom(Image)
 }

@@ -7,17 +7,17 @@ struct TestView: View {
             List {
                 Button("Show Toast") {
                     ToastNotification.make()
-                        .title("Created successfully!")
-                        .body("KhatmaCreated")
+                        .title("تم التحديث")
                         .success()
+                        .body("تم مزامنة البيانات بنجاح")
                         .send()
                 }
                 
                 Button("Show Phosphor Toast") {
                     ToastNotification.make()
-                        .title("تم التحديث")
-                        .body("تم مزامنة البيانات بنجاح")
-//                        .phosphorIcon(.cloudCheck)
+                        .title("تم الحذف بنجاح")
+                        .body("تم حذف الملف نهائياً من النظام")
+                        .icon(Ph.trash.duotone)
                         .send()
                 }
             }

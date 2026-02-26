@@ -10,15 +10,15 @@ import PhosphorSwift
 
 public struct ToastNotification: Identifiable, Sendable {
     public private(set) var id: String = UUID().uuidString
+    var icon: ToastIcon?
+    var iconColor: Color = .white
+    var iconSize: CGFloat = 32
+    var duration: TimeInterval = 3.0
     
-    public var title: String = ""
-    public var body: String = ""
-    public var icon: ToastIcon?
-    public var iconColor: (Color, Color) = (.white, .green)
-    public var duration: TimeInterval = 3.0
-    
-    public var titleFont: Font = .callout
-    public var bodyFont: Font = .caption
+    public private(set) var title: String = ""
+    public private(set) var body: String = ""
+    public private(set) var titleFont: Font = .callout
+    public private(set) var bodyFont: Font = .caption
     
     var isArabic: Bool {
         let combinedText = title + body
@@ -45,20 +45,44 @@ public struct ToastNotification: Identifiable, Sendable {
         return copy
     }
     
-    public func icon(_ icon: ToastIcon, color: Color = .white, secondaryColor: Color = .white) -> Self {
+    // MARK: - Phosphors Icon
+    public func icon(_ image: Image) -> Self {
         var copy = self
-        copy.icon = icon
-        copy.iconColor = (secondaryColor, color)
+        copy.icon = .custom(image)
+        return copy
+    }
+    
+    public func systemIcon(_ name: String) -> Self {
+        var copy = self
+        copy.icon = .system(name)
+        return copy
+    }
+    
+    public func iconColor(_ color: Color) -> Self {
+        var copy = self
+        copy.iconColor = color
+        return copy
+    }
+    
+    public func iconSize(_ size: CGFloat) -> Self {
+        var copy = self
+        copy.iconSize = size
         return copy
     }
     
     public func success() -> Self {
-        return self.icon(.system("checkmark.seal.fill"), color: .twEmerald400)
+        var copy = self
+        copy.icon = .system("checkmark.seal.fill")
+        copy.iconColor = .twEmerald400
+        return copy
     }
     
     public func error() -> Self {
-        return self.icon(.system("xmark.octagon.fill"), color: .twRed400)
-    }
+            var copy = self
+            copy.icon = .system("xmark.octagon.fill")
+            copy.iconColor = .twRed400
+            return copy
+        }
     
     public func duration(_ duration: TimeInterval) -> Self {
         var copy = self

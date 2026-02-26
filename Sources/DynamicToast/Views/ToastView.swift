@@ -75,55 +75,59 @@ public struct ToastView: View {
     }
     
     @ViewBuilder
-    private func ToastContent(_ haveDynamicIsland: Bool, isExpended: Bool) -> some View {
-        if let toast = manager.currentToast {
-            HStack(spacing: 10) {
-                if let icon = toast.icon {
-                    renderIcon(icon)
-                        .frame(width: 50, height: 50)
-                        .font(.title)
-                        .foregroundStyle(toast.iconColor.0, toast.iconColor.1)
-                        .symbolEffect(.wiggle, options: .default.speed(1.5), value: isExpended)
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    if haveDynamicIsland {
-                        Spacer(minLength: 0)
+        private func ToastContent(_ haveDynamicIsland: Bool, isExpended: Bool) -> some View {
+            if let toast = manager.currentToast {
+                HStack(alignment: .center, spacing: 10) {
+                    if let icon = toast.icon {
+                        renderIcon(icon, size: toast.iconSize, color: toast.iconColor)
+                            .symbolEffect(.wiggle, options: .default.speed(1.5), value: isExpended)
                     }
-                    Text(toast.title)
-                        .font(toast.titleFont)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
                     
-                    if !toast.body.isEmpty {
-                        Text(toast.body)
-                            .font(toast.bodyFont)
-                            .foregroundStyle(Color.twSlate100)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(toast.title)
+                            .font(toast.titleFont)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .multilineTextAlignment(.leading)
+                        
+                        if !toast.body.isEmpty {
+                            Text(toast.body)
+                                .font(toast.bodyFont)
+                                .foregroundStyle(Color.twSlate100)
+                                .multilineTextAlignment(.leading)
+                        }
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, toast.icon == nil ? 12 : 0)
+                    .lineLimit(1)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.bottom, haveDynamicIsland ? 12 : 0)
-                .padding(.leading, toast.icon == nil ? 12 : 0)
-                .lineLimit(1)
+                .padding(.horizontal, 20)
+                .padding(.top, haveDynamicIsland ? 12 : 0)
+                .frame(maxHeight: .infinity, alignment: .center)
+                .environment(\.layoutDirection, toast.isArabic ? .rightToLeft : .leftToRight)
+                .compositingGroup()
+                .blur(radius: isExpended ? 0 : 5)
+                .opacity(isExpended ? 1 : 0)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, haveDynamicIsland ? 12 : 0)
-            .environment(\.layoutDirection, toast.isArabic ? .rightToLeft : .leftToRight)
-            .compositingGroup()
-            .blur(radius: isExpended ? 0 : 5)
-            .opacity(isExpended ? 1 : 0)
         }
-    }
     
     @ViewBuilder
-    private func renderIcon(_ icon: ToastIcon?) -> some View {
-        if let icon {
+    private func renderIcon(_ icon: ToastIcon, size: CGFloat, color: Color) -> some View {
+        Group {
             switch icon {
             case .system(let name):
                 Image(systemName: name)
-            case .phosphor(let ph):
-                Image(systemName: ph)
+                    .resizable()
+                    .scaledToFit()
+                
+            case .custom(let image):
+                image
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
             }
         }
+        .frame(width: size, height: size)
+        .foregroundStyle(color)
     }
 }
