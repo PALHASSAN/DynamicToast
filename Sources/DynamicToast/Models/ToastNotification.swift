@@ -96,3 +96,27 @@ public struct ToastNotification: Identifiable, Sendable {
         ToastManager.shared.show(self)
     }
 }
+
+public extension ToastNotification {
+    @MainActor
+    func sendToNativeDynamicIsland() {
+        // Extract system icon name if it's a system icon
+        var sysIcon: String? = nil
+        if case .system(let name) = self.icon {
+            sysIcon = name
+        }
+        
+        // Start the Activity
+        LiveActivityManager.shared.start(
+            title: self.title,
+            body: self.body,
+            systemIcon: sysIcon
+        )
+        
+        // Auto-dismiss after the duration
+        Task {
+            try? await Task.sleep(for: .seconds(self.duration))
+            LiveActivityManager.shared.end(dismissalPolicy: .immediate)
+        }
+    }
+}
